@@ -1,5 +1,14 @@
-var BasicPlane = function( type ) {
+var BasicPlane = function( srcimg, type ) {
+
 	this.type = type;
+	this.sprite = new Kinetic.Sprite({
+	  x: 0,
+	  y: 0,
+	  image: srcimg,
+	  animation: 'idle',
+	  animations: this.getFrames(),
+	  frameRate: 30
+	});
 }
 
 // Cached animation arrays
@@ -38,7 +47,7 @@ BasicPlane.frame_gap = { x: 1, y: 1  },
 BasicPlane.prototype = {	
 
 	// Creates an array with all the frames for a type
-	get_frames : function( ) {
+	getFrames : function( ) {
 	
 		if ( BasicPlane.frame_animations[ this.type ] !== undefined )
 			return BasicPlane.frame_animations[ this.type ];
@@ -61,26 +70,13 @@ BasicPlane.prototype = {
 		BasicPlane.frame_animations[ this.type ] = animations;
 		return animations;
 	},
-};
-
-var testplane = new BasicPlane( 'orange' );
-
-var sourceImage = new Kinetic.Image();
-sourceImage.onload = function() {
-	var sprite = new Kinetic.Sprite({
-		x: 250,
-		y: 40,
-		image: sourceImage,
-		animation: 'idle',
-		animations: testplane.get_frames(),
-		frameRate: 10
-	});
 	
-	// add the shape to the layer
-	layer.add( sprite );
-
-	// start sprite animation
-	sprite.start();
+	getSprite : function( ) {
+		return this.sprite;
+	},
+	
+	attach : function( layer ) {
+		level.add( this.getSprite() );
+		this.getSprite().start();
+	}
 };
-
-sourceImage.src = 'images/1945.png';
