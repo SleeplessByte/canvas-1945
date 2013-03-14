@@ -11,28 +11,22 @@
   <body>
     <div id="container"></div>
     <script src="js/kinetic-vcurrent.js"></script>
+	<script src="js/core/game.js"></script>
 	<script src="js/models/enemies/basic.js"></script>
+	<script src="js/models/hud/fps.js"></script>
     <script>
-	
-		var stage = new Kinetic.Stage({
-			container: 'container',
-			width: 640,
-			height: 480
-		});
-
-		var background = new Kinetic.Layer();
-		var level = new Kinetic.Layer();
+		Game.addLayer( 'background', new Kinetic.Layer() );
+		Game.addLayer( 'level', new Kinetic.Layer() );
+		Game.addLayer( 'hud', new Kinetic.Layer() );
 		
 		var sourceImage = new Image();
 		
 		var plane = new BasicPlane( sourceImage, 'orange' );
-		plane.attach( level );
-
-        // add the layer to the stage
-        stage.add(level);
-
+		plane.attach( Game.getLayer( 'level' ) );  
+	
 		sourceImage.src = 'images/1945.png';
 		
     </script>
+	<script src="js/glue/hud.js"></script>
   </body>
 </html>
