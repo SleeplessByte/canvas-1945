@@ -39,4 +39,21 @@ var Game = new function() {
 	this.getLayer = function( layer ) {
 		return layers[ layer ];
 	};
+	
+	this.getCenterStage = function() {
+		return { 
+			x: this.getStage().getWidth() / 2, 
+			y: this.getStage().getHeight() / 2,
+		};
+	};
+	
+	this.start = function() {
+		Input.start();
+	};
+	
+	this.stop = function() {
+		Input.stop();
+	};
+	
+	
 };
