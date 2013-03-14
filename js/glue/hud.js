@@ -1,0 +1,1 @@
+Game.add( 'fps', new FPS_Logic( Game.getStage(), Game.getLayer( 'hud' ) ) );
