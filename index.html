@@ -1,32 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <style>
-      body {
-        margin: 0px;
-        padding: 0px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="container"></div>
-    <script src="js/kinetic-vcurrent.js"></script>
-	<script src="js/core/game.js"></script>
-	<script src="js/models/enemies/basic.js"></script>
-	<script src="js/models/hud/fps.js"></script>
-    <script>
-		Game.addLayer( 'background', new Kinetic.Layer() );
-		Game.addLayer( 'level', new Kinetic.Layer() );
-		Game.addLayer( 'hud', new Kinetic.Layer() );
+	<head>
+		<style>
+			body {
+				margin: 0px;
+				padding: 0px;
+			}
+			
+			#container {
+				top: 50%;
+				left: 50%;
+				width: 640px;
+				height: 480px;
+				margin-top: -240px;
+				margin-left: -320px;
+				position:fixed;
+			}
+	  
+			#container div {
+				background: rgb( 8, 54, 129 );
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container"></div>
+		<script src="js/kinetic-vcurrent.js"></script>
+		<script src="js/core/utils.js"></script>
+		<script src="js/core/game.js"></script>
+		<script src="js/core/game_player.js"></script>
+		<script src="js/core/input.js"></script>
+		<script src="js/models/planes/basic.js"></script>
+		<script src="js/models/planes/turnable.js"></script>
+		<script src="js/models/planes/player.js"></script>
+		<script src="js/models/hud/fps.js"></script>
+		<script>
+			Game.addLayer( 'background', new Kinetic.Layer() );
+			Game.addLayer( 'level', new Kinetic.Layer() );
+			Game.addLayer( 'hud', new Kinetic.Layer() );
+			
+			var sourceImage = new Image();
+			
+			var plane = new TurnablePlane( sourceImage, 'white' );
+			plane.attach( Game.getLayer( 'level' ) );  
+			
+			GamePlayer.spawn( 'Test', sourceImage );
+			sourceImage.src = 'images/1945.png';
+			
+			Game.start();
 		
-		var sourceImage = new Image();
-		
-		var plane = new BasicPlane( sourceImage, 'orange' );
-		plane.attach( Game.getLayer( 'level' ) );  
-	
-		sourceImage.src = 'images/1945.png';
-		
-    </script>
-	<script src="js/glue/hud.js"></script>
-  </body>
+		</script>
+		<script src="js/glue/hud.js"></script>
+	</body>
 </html>

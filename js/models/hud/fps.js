@@ -2,12 +2,12 @@ var FPS_Logic = function( stage, layer ) {
 
 	// Add FPS text
 	this.text = new Kinetic.Text({
-		width: stage.getWidth() - 10,
+		width: stage.getWidth() - 11,
 		y: 10,
 		text: '60 FPS',
-		fontSize: 10,
-		fontFamily: 'Calibri',
-		fill: 'black',
+		fontSize: 8,
+		fontFamily: 'Arial',
+		fill: 'white',
 		align: 'right'
 	});
 	layer.add( this.text );
