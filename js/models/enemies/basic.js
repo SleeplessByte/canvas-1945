@@ -1,5 +1,6 @@
 var BasicPlane = function( srcimg, type ) {
 
+	this.proto = BasicPlane;
 	this.type = type;
 	this.sprite = new Kinetic.Sprite({
 	  x: 0,
@@ -19,7 +20,7 @@ BasicPlane.frame_length = {
     idle : 3,
     turn : 8,
 },
-	
+
 // The starting position of the animation
 BasicPlane.frame_positions = { 
 	
@@ -49,34 +50,45 @@ BasicPlane.prototype = {
 	// Creates an array with all the frames for a type
 	getFrames : function( ) {
 	
-		if ( BasicPlane.frame_animations[ this.type ] !== undefined )
-			return BasicPlane.frame_animations[ this.type ];
+		if ( this.proto.frame_animations[ this.type ] !== undefined )
+			return this.proto.frame_animations[ this.type ];
 			
 		var animations = { };
-		for ( animation in BasicPlane.frame_positions ) {
+		for ( animation in this.proto.frame_positions ) {
 			animations[ animation ] = [];
-			var frame_position = BasicPlane.frame_positions[ animation ][ this.type ];
-			for ( var i = 0; i < BasicPlane.frame_length[ animation ]; i++ ) {
+			var frame_position = this.proto.frame_positions[ animation ][ this.type ];
+			for ( var i = 0; i < this.proto.frame_length[ animation ]; i++ ) {
+			
 				animations[ animation ].push( {
 					x: frame_position.x,
 					y: frame_position.y,
-					width: BasicPlane.frame_size.w,
-					height: BasicPlane.frame_size.h, } );
+					width: this.proto.frame_size.w,
+					height: this.proto.frame_size.h, } );
 					
-				frame_position.x += BasicPlane.frame_size.w + BasicPlane.frame_gap.x;
+				frame_position.x += this.proto.frame_size.w + this.proto.frame_gap.x;
 			}
 		}
 		
-		BasicPlane.frame_animations[ this.type ] = animations;
+		this.proto.frame_animations[ this.type ] = animations;
 		return animations;
 	},
 	
+	// Returns the inner Kintetic sprite
 	getSprite : function( ) {
 		return this.sprite;
 	},
 	
+	// Attaches this to a layer
 	attach : function( layer ) {
-		level.add( this.getSprite() );
-		this.getSprite().start();
+		var sprite = this.getSprite();
+		layer.add( sprite );
+		sprite.start();
+	},
+	
+	// Sets the animation
+	setAnimation : function( animation ) {
+		var sprite = this.getSprite();
+		sprite.setAnimation( animation );
+		//sprite.frameRate = this.proto.frame_rate[ animation ]; // TODO
 	}
 };
