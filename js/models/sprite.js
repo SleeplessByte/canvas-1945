@@ -123,6 +123,12 @@ Sprite.prototype = {
 		return this;
 	},
 	
+	afterAnimation : function( func ) {
+		var sprite = this.getSprite();
+		var frames = this.getFrameLength()[ sprite.getAnimation() ];
+		sprite.afterFrame( frames.x * frames.y - 1, func );
+	},
+	
 	update : function( frame ) {
 		this.updatePosition();
 	},
@@ -145,6 +151,14 @@ Sprite.prototype = {
 		if ( position.y < -this.getHeight() )
 			return false;
 		return position.y < Game.getStage().getHeight();
+	},
+	
+	// Destroys this sprite
+	destroy : function() {
+		this.getSprite().stop(); 
+		this.getSprite().hide(); 
+				
+		Game.remove( this.id() );
 	}
 };
 
