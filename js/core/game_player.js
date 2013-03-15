@@ -48,7 +48,7 @@ var GamePlayer = new function() {
 		// Player animation loop
 		var context = plane.update;
 		plane.update = function( frame ) { 
-			context.apply( plane, frame );
+			this.updatePosition();
 			
 			var delta = plane.getSpeed() * frame.timeDiff / 1000;
 			
