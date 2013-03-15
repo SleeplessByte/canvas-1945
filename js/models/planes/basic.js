@@ -1,19 +1,29 @@
-var BasicPlane = function( srcimg, type ) {
+var BasicPlane = function( srcimg, type, options ) {
 	Sprite.call( this, srcimg, type );
 	
-	var speed = 100;
-	var health = 100;
+	var health = 1; // TODO health per type
 		
 	// Returns the planes speed
 	this.getSpeed = function() {
-		return speed;
+		return Game.getSpeed() * 1.5;
 	};
 	
 	// Returns the planes health
 	this.getHealth = function() {
 		return health;
 	};
-
+	
+	if ( options ) {
+		
+		// Set the health
+		health = options.health || health;
+	
+		// Set the position
+		if ( options.position ) {
+			this.setPosition( options.position.x || 0, options.position.y || 0 );
+			this.updatePosition( true );
+		}
+	}
 }
 
 BasicPlane.prototype = Object.deepExtend( 
@@ -28,19 +38,51 @@ BasicPlane.prototype = Object.deepExtend(
 					white	: { x: 103,	y: 466 	},
 					olive	: { x: 202,	y: 466 	},
 					blue	: { x: 301,	y: 466 	}
+				},
+				
+				explode : {
+					green 	: { x: 70, 	y: 169 	},
+					orange	: { x: 70, 	y: 169 	},
+					white	: { x: 70,	y: 169 	},
+					olive	: { x: 70,	y: 169 	},
+					blue	: { x: 70,	y: 169 	}
 				}
 			};
-				
 		},
 	
 		// The animation length (number of frames)
 		getFrameLength : function() {
-			return { idle : { x: 3, y: 1 } }
+			return { 
+				idle : { x: 3, y: 1 },
+				explode : { x: 6, y: 1 },
+			}
 		},
 	
 		// The size of each animation frame
 		getFrameSize : function() {
 			return { w: 32, h: 32 }
+		},
+		
+		update : function( frame ) {
+			var delta = this.getSpeed() * frame.timeDiff / 1000;
+			this.deltaPosition( 0, delta );
+			
+			this.updatePosition();
+			if ( this.getPosition().y > Game.getStage().getHeight() )
+				this.destroy();
+		},
+		
+		// Exploded
+		explode : function() {
+		
+			var context = this; 
+			this.setAnimation( 'explode' );			
+			
+			// Hide when it's done.
+			var afterExplode = function() {
+				context.destroy();
+			};
+			this.afterAnimation( afterExplode );				
 		}
 	}
 );
