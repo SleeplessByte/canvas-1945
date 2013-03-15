@@ -2,7 +2,7 @@ var BasicPlane = function( srcimg, type, options ) {
 	Sprite.call( this, srcimg, type );
 	
 	var health = 1; // TODO health per type
-		
+
 	// Returns the planes speed
 	this.getSpeed = function() {
 		return Game.getSpeed() * 1.5;
@@ -11,6 +11,19 @@ var BasicPlane = function( srcimg, type, options ) {
 	// Returns the planes health
 	this.getHealth = function() {
 		return health;
+	};
+	
+	//
+	this.damage = function( dmg ) {
+		health -= dmg;
+		if ( health <= 0 ) {
+			this.explode();
+		}
+	};
+	
+	//
+	this.isSolid = function() {
+		return this.getSprite().getAnimation() != 'explode';
 	};
 	
 	if ( options ) {
@@ -74,15 +87,24 @@ BasicPlane.prototype = Object.deepExtend(
 		
 		// Exploded
 		explode : function() {
-		
-			var context = this; 
 			this.setAnimation( 'explode' );			
-			
 			// Hide when it's done.
-			var afterExplode = function() {
-				context.destroy();
-			};
-			this.afterAnimation( afterExplode );				
+			this.afterAnimation( this.afterExplode );				
+		},
+		
+		// After explosion
+		afterExplode : function() {
+			this.destroy();
+		},
+		
+		// On collision
+		onCollision : function( collidee ) {
+			
+			//if ( collidee instanceof PlayerBullet )
+			//	this.damage( collidee.getDamage() );
+				
+			if ( collidee instanceof PlayerPlane )
+				this.damage( 100 );
 		}
 	}
 );

@@ -14,12 +14,10 @@ var Input = new function() {
 	
 	onFocus = function( event ) {
 		isFocussed = true;
-		console.info( 'focus' );
 	};
 	
 	onBlur = function( event ) {
 		isFocussed = false;
-		console.info( 'blur' );
 	};
 	 
 	// Gets the activate-state of the window

@@ -12,6 +12,20 @@ var PlayerPlane = function ( srcimg ) {
 	this.getHealth = function() {
 		return health;
 	};
+	
+	//
+	this.damage = function( dmg ) {
+		health -= dmg;
+		if ( health <= 0 ) {
+			this.explode();
+		}
+	}
+	
+	//
+	this.isSolid = function() {
+		return this.getSprite().getAnimation() != 'explode';
+	};
+
 }
 
 PlayerPlane.prototype = Object.deepExtend( 
@@ -42,5 +56,74 @@ PlayerPlane.prototype = Object.deepExtend(
 		getFrameSize : function() {
 			return { w: 65, h: 65 }
 		},
+		
+		// Exploded
+		explode : function() {
+			this.setAnimation( 'explode' );			
+			// Hide when it's done.
+			this.afterAnimation( this.afterExplode );				
+		},
+		
+		// After explosion
+		afterExplode : function() {
+			this.destroy();
+		},
+		
+		update : ( function() {
+		
+			// Tests collision between two sprites
+			var testCollision = function( context, test ) {
+				
+				var tpos = test.getPosition();
+				var tsize = test.getFrameSize();
+				var cpos = context.getPosition();
+				var csize = context.getFrameSize();
+				
+				return !(
+					tpos.x > cpos.x + csize.w
+					|| tpos.x + tsize.w < cpos.x
+					|| tpos.y > cpos.y + cpos.h
+					|| tpos.y + tsize.h < cpos.y 
+				);
+			};
+		
+			// Update collision
+			var updateCollisions = function( context ) {
+			
+				var sprites = Game.getLayer( 'level' ).getChildren();
+				for ( var sprite in sprites ) {
+					
+					if ( context == sprites[sprite].tag 
+						|| !sprites[sprite].tag.isSolid() 
+					)
+						continue;
+					else if ( testCollision( context, sprites[sprite].tag ) ) {
+						context.onCollision( sprites[sprite].tag );
+						sprites[sprite].tag.onCollision( context );
+					}
+				}
+			};
+			
+			return function ( frame ) {
+				updateCollisions( this );
+				this.updatePosition();
+			}
+		})(),
+		
+		//
+		onCollision : function( collidee ) {
+			
+			if( collidee instanceof BasicPlane )
+				this.damage( 20 );
+			
+			//if( collidee instanceof EnemyBullet )
+			//	this.damage( collidee.getDamage() );
+		}
 	}
 );
+
+// Ammend update
+/*var original = PlayerPlane.prototype.update;
+PlayerPlane.prototype.update = function( frame ) {
+	original.call( this, frame );
+};*/
