@@ -8,6 +8,7 @@ var Sprite = function( srcimg, type ) {
 	  animation: 'idle',
 	  frameRate: 30
 	});
+	sprite[ 'tag' ] = this;
 	
 	var position = { x: 0, y: 0 };
 	var positionInView = true;
@@ -155,9 +156,10 @@ Sprite.prototype = {
 	
 	// Destroys this sprite
 	destroy : function() {
-		this.getSprite().stop(); 
 		this.getSprite().hide(); 
-				
+		this.getSprite().destroy();
+		this.getSprite().stop(); 
+		
 		Game.remove( this.id() );
 	}
 };
