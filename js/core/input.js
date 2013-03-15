@@ -2,6 +2,7 @@ var Input = new function() {
 	
 	// Event listeners
 	var currentKeys = new Array();	
+	var isFocussed = false;
 	
 	onKeyDown = function( event ) {
 		currentKeys[ event.keyCode ] = true;
@@ -11,10 +12,27 @@ var Input = new function() {
 		currentKeys[ event.keyCode ] = false;
 	};
 	
+	onFocus = function( event ) {
+		isFocussed = true;
+		console.info( 'focus' );
+	};
+	
+	onBlur = function( event ) {
+		isFocussed = false;
+		console.info( 'blur' );
+	};
+	 
+	// Gets the activate-state of the window
+	this.IsActive = function() {
+		return isFocussed;
+	};
+	
+	// Key is currently pressed
 	this.IsKeyDown = function( key ) {
 		return currentKeys[ key ] === true;
 	};
 	
+	// Key is currently released
 	this.IsKeyUp = function( key ) {
 		return currentKeys[ key ] !== true;
 	}
@@ -31,13 +49,21 @@ var Input = new function() {
 		return currentKeys;
 	};
 	
+	// Starts listening for key input
 	this.start = function() {
-		window.addEventListener( 'keydown', onKeyDown, true);
-		window.addEventListener( 'keyup', onKeyUp, true);
+		window.addEventListener( 'keydown', onKeyDown, true );
+		window.addEventListener( 'keyup', onKeyUp, true );
+		window.addEventListener( 'blur', onBlur, true );
+		window.addEventListener( 'focus', onFocus, true );
+		
+		isFocussed = document.hasFocus();
 	};
 	
+	// Stops listening for key input
 	this.stop = function() {
 		window.removeEventListener( 'keydown', onKeyDown, true);
 		window.removeEventListener( 'keyup', onKeyUp, true);
+		window.removeEventListener( 'blur', onBlur, true );
+		window.removeEventListener( 'focus', onFocus, true );
 	};
 };
