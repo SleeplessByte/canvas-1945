@@ -1,5 +1,6 @@
 var Game = new function() {
 	var objects = {};
+	var marked_for_removal = [];
 	var layers = {};
 
 	var stage = new Kinetic.Stage({
@@ -7,6 +8,17 @@ var Game = new function() {
 		width: 640,
 		height: 480
 	});
+	
+	var loop = new Kinetic.Animation( function( frame ) { 
+		for ( var object in objects ) {
+			if ( objects[ object ].update !== undefined )
+				objects[ object ].update( frame );
+		}
+		
+		for ( var object in marked_for_removal )
+			delete objects[ object ];
+		marked_for_removal = [];
+	} );
 	
 	// Adds an object
 	this.add = function( key, object ) {
@@ -18,7 +30,7 @@ var Game = new function() {
 	
 	// Removes an object
 	this.remove = function( key ) {
-		delete objects[ key ];
+		marked_for_removal.push( key );
 	};
 	
 	// Adds a layer
@@ -49,10 +61,12 @@ var Game = new function() {
 	
 	this.start = function() {
 		Input.start();
+		loop.start();
 	};
 	
 	this.stop = function() {
 		Input.stop();
+		loop.stop();
 	};
 	
 	

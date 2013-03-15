@@ -7,52 +7,65 @@ var GamePlayer = new function() {
 	var level = 0;
 	var loop = null;
 	
-	this.getLives = function() {
-		return lives;
-	};
-	
+	// Gets the players plane
 	this.getPlane = function() {
 		return plane;
 	};
 	
+	// Gets the players lives
+	this.getLives = function() {
+		return lives;
+	};	
+	
+	// Gets the current number of points
 	this.getPoints = function() {
 		return points;
 	};
 	
+	// Gets the current level
 	this.getLevel = function() {
 		return level;
 	};
 	
+	// Gets the player name
 	this.getName = function() {
 		return name;
 	};
 	
+	// Spawns the player
 	this.spawn = function( newname, sourceImage ) {
 	
 		name = newname;
 		plane = new PlayerPlane( sourceImage );
 		plane.attach( Game.getLayer( 'level' ) );
+				
+		// Updates the position to the initial placement
 		plane.setPosition( 
-			Math.floor( Game.getCenterStage().x - plane.getWidth() / 2 ), 
-			400 
+			Game.getCenterStage().x - plane.getWidth() / 2,
+			400
 		);
 		
-		var context = this;
-		var prev = Input.GetKeys();
-		loop = new Kinetic.Animation( function( frame ) {
+		// Player animation loop
+		var context = plane.update;
+		plane.update = function( frame ) { 
+			context.apply( plane, frame );
 			
-			var delta = 100 * frame.timeDiff / 1000;
+			var delta = plane.getSpeed() * frame.timeDiff / 1000;
 			
 			if ( Input.IsKeyDown( 38 ) ) // up
-				plane.setPosition( plane.getPosition().x,  plane.getPosition().y - delta );
+				plane.deltaPosition( 0, -delta );
 			if ( Input.IsKeyDown( 40 ) ) // down
-				plane.setPosition( plane.getPosition().x,  plane.getPosition().y + delta );
+				plane.deltaPosition( 0, delta );
 			if ( Input.IsKeyDown( 37 ) ) // left
-				plane.setPosition( plane.getPosition().x - delta,  plane.getPosition().y );
+				plane.deltaPosition( -delta, 0 );
 			if ( Input.IsKeyDown( 39 ) ) // right
-				plane.setPosition( plane.getPosition().x + delta,  plane.getPosition().y );		
-			
-		}, Game.getLayer( 'level' ) );
-		loop.start();
+				plane.deltaPosition( delta, 0 );
+		};
 	};	
+	
+	// Despawns the player
+	this.despawn = function() {
+		loop.stop();
+		//plane.getSprite().hide();
+	}
 };

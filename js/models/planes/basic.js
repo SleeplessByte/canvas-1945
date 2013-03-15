@@ -9,6 +9,12 @@ var BasicPlane = function( srcimg, type ) {
 	  frameRate: 30
 	});
 	
+	var loop = null;
+	var speed = 100;
+	var health = 100;
+	var position = { x: 0, y: 0 };
+	var positionInView = true;
+	
 	// Gets the type
 	this.getType = function() {
 		return type;
@@ -18,7 +24,45 @@ var BasicPlane = function( srcimg, type ) {
 	this.getSprite = function() {
 		return sprite;
 	};
-
+	
+	// Get the position of the plane
+	this.getPosition = function() {
+		return position;
+	};
+	
+	// Returns the planes speed
+	this.getSpeed = function() {
+		return speed;
+	};
+	
+	// Returns the planes health
+	this.getHealth = function() {
+		return health;
+	};
+	
+	// Set the sprite position of the plane
+	this.setPosition = function( x, y ) {
+		position.x = x;
+		position.y = y;
+		
+		positionInView = this.isInView();
+		return this;
+	};
+	
+	// Updates the position by a delta value
+	this.deltaPosition = function( dx, dy ) {
+		position.x = position.x + dx;
+		position.y = position.y + dy;
+		
+		positionInView = this.isInView();
+		return this;
+	};
+	
+	// Returns if position was in view last time it was set
+	this.wasInView = function() { 
+		return positionInView;
+	}
+		
 	this.getSprite().setAnimations( this.getFrames() );
 }
 
@@ -46,6 +90,8 @@ BasicPlane.prototype = {
 	getFrameSize : function() {
 		return { w: 32, h: 32 }
 	},
+	
+	// The size of the gap between the frames
 	getFrameGap : function() {
 		return { x: 1, y: 1  }
 	},
@@ -76,20 +122,14 @@ BasicPlane.prototype = {
 		return animations;
 	},
 	
+	// Get the width of the plane
 	getWidth : function() {
 		return this.getFrameSize().w;
 	},
 	
+	// Get the height of the plane
 	getHeight : function() {
 		return this.getFrameSize().h;
-	},
-	
-	getPosition : function() {
-		return this.getSprite().getPosition();
-	},
-	
-	setPosition : function( x, y ) {
-		this.getSprite().setPosition( x, y );
 	},
 	
 	// Attaches this to a layer
@@ -97,6 +137,9 @@ BasicPlane.prototype = {
 		var sprite = this.getSprite();
 		layer.add( sprite );
 		sprite.start();
+		
+		Game.add( this.id(), this );
+		return this;
 	},
 	
 	// Sets the animation
@@ -104,5 +147,43 @@ BasicPlane.prototype = {
 		var sprite = this.getSprite();
 		sprite.setAnimation( animation );
 		//sprite.frameRate = BasicPlane.frame_rate[ animation ]; // TODO
+		return this;
+	},
+	
+	update : function( frame ) {
+		this.updatePosition();
+	},
+	
+	// Takes care of actually moving the plane to pixel values only
+	updatePosition : function() {
+		if ( !this.wasInView() )
+			return;
+			
+		this.getSprite().setPosition( Math.round( this.getPosition().x, 0 ), Math.round( this.getPosition().y, 0 ) );
+	},
+	
+	// Checks if this object is in view
+	isInView : function() {
+		var position = this.getPosition();
+		if ( position.x < -this.getWidth() )
+			return false;
+		if ( position.x > Game.getStage().getWidth() )
+			return false;
+		if ( position.y < -this.getHeight() )
+			return false;
+		return position.y < Game.getStage().getHeight();
 	}
 };
+
+// Add Unique Ids
+(function() {
+    var id = 0;
+
+    function generateId() { return id++; };
+
+    BasicPlane.prototype.id = function() {
+        var newId = generateId();
+        this.id = function() { return newId; };
+        return newId;
+    };
+})();
