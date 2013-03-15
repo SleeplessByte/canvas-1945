@@ -1,11 +1,9 @@
 var Island = function( srcimg, type, y ) {
 	Sprite.call( this, srcimg, type );
-	
-	var speed = 100;
 		
 	// Returns the planes speed
 	this.getSpeed = function() {
-		return speed;
+		return Game.getSpeed();
 	};
 	
 	// Returns the planes health
@@ -58,7 +56,6 @@ Island.prototype = Object.deepExtend(
 					-Game.getStage().getHeight() - this.getHeight() 
 				);
 				
-			
 			this.updatePosition();
 		}
 	}

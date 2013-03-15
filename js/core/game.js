@@ -2,6 +2,7 @@ var Game = new function() {
 	var objects = {};
 	var marked_for_removal = [];
 	var layers = {};
+	var speed = 80;
 
 	var stage = new Kinetic.Stage({
 		container: 'container',
@@ -14,9 +15,6 @@ var Game = new function() {
 			if ( objects[ object ].update !== undefined )
 				objects[ object ].update( frame );
 		}
-		for ( var object in marked_for_removal )
-			delete objects[ object ];
-		marked_for_removal = [];
 	}, stage );
 	
 	// Adds an object
@@ -29,7 +27,7 @@ var Game = new function() {
 	
 	// Removes an object
 	this.remove = function( key ) {
-		marked_for_removal.push( key );
+		delete objects[ key ];
 	};
 	
 	// Adds a layer
@@ -60,6 +58,10 @@ var Game = new function() {
 			y: this.getStage().getHeight() / 2,
 		};
 	};
+	
+	this.getSpeed = function() {
+		return speed;
+	}
 	
 	// Starts the game
 	this.start = function() {

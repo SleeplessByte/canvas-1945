@@ -43,25 +43,24 @@
 			var sourceImage = new Image();
 			sourceImage.src = 'images/1945.png';
 			
-			// Islands
-			var island_one = new Island( sourceImage, 'one' );
-			var island_two = new Island( sourceImage, 'two' );
-			var island_three = new Island( sourceImage, 'three' );
-			
-			island_one.attach( Game.getLayer( 'background' ) );
-			island_two.attach( Game.getLayer( 'background' ) );
-			island_three.attach( Game.getLayer( 'background' ) );
-			
 			// Testplane
-			var plane = new TurnablePlane( sourceImage, 'white' );
+			var plane = new BasicPlane( sourceImage, 'orange', { health: 2, position : { x : 500 } } );
+			plane.attach( Game.getLayer( 'level' ) );
+			plane = new BasicPlane( sourceImage, 'orange', { health: 2, position : { x : 300 } } );
+			plane.attach( Game.getLayer( 'level' ) );  
+			plane = new BasicPlane( sourceImage, 'orange', { health: 2, position : { x : 100 } } );
+			plane.attach( Game.getLayer( 'level' ) );  
+			plane = new BasicPlane( sourceImage, 'white', { health: 2, position : { x : 400, y: -100 } } );
+			plane.attach( Game.getLayer( 'level' ) );  
+			plane = new BasicPlane( sourceImage, 'white', { health: 2, position : { x : 200, y: -100 } } );
 			plane.attach( Game.getLayer( 'level' ) );  
 			
 			// Player
 			GamePlayer.spawn( 'Test', sourceImage );
 			
 			Game.start();
-		
 		</script>
+		<script src="js/glue/background.js"></script>
 		<script src="js/glue/hud.js"></script>
 	</body>
 </html>
