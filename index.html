@@ -29,6 +29,8 @@
 		<script src="js/core/game.js"></script>
 		<script src="js/core/game_player.js"></script>
 		<script src="js/core/input.js"></script>
+		<script src="js/models/sprite.js"></script>
+		<script src="js/models/island.js"></script>
 		<script src="js/models/planes/basic.js"></script>
 		<script src="js/models/planes/turnable.js"></script>
 		<script src="js/models/planes/player.js"></script>
@@ -39,12 +41,23 @@
 			Game.addLayer( 'hud', new Kinetic.Layer() );
 			
 			var sourceImage = new Image();
+			sourceImage.src = 'images/1945.png';
 			
+			// Islands
+			var island_one = new Island( sourceImage, 'one' );
+			var island_two = new Island( sourceImage, 'two' );
+			var island_three = new Island( sourceImage, 'three' );
+			
+			island_one.attach( Game.getLayer( 'background' ) );
+			island_two.attach( Game.getLayer( 'background' ) );
+			island_three.attach( Game.getLayer( 'background' ) );
+			
+			// Testplane
 			var plane = new TurnablePlane( sourceImage, 'white' );
 			plane.attach( Game.getLayer( 'level' ) );  
 			
+			// Player
 			GamePlayer.spawn( 'Test', sourceImage );
-			sourceImage.src = 'images/1945.png';
 			
 			Game.start();
 		
