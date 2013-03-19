@@ -6,7 +6,8 @@ var Sprite = function( srcimg, type ) {
 	  y: 0,
 	  image: srcimg,
 	  animation: 'idle',
-	  frameRate: 30
+	  frameRate: 30,
+	  listening: false
 	});
 	sprite[ 'tag' ] = this;
 	
@@ -145,13 +146,12 @@ Sprite.prototype = {
 	// Checks if this object is in view
 	isInView : function() {
 		var position = this.getPosition();
-		if ( position.x < -this.getWidth() )
-			return false;
-		if ( position.x > Game.getStage().getWidth() )
-			return false;
-		if ( position.y < -this.getHeight() )
-			return false;
-		return position.y < Game.getStage().getHeight();
+		return !( 
+			position.y > Game.getStage().getHeight()
+			|| position.y < -this.getHeight()
+			|| position.x < -this.getWidth()
+			|| position.x > Game.getStage().getWidth()
+		);
 	},
 	
 	// Destroys this sprite
@@ -163,7 +163,6 @@ Sprite.prototype = {
 		Game.remove( this.id() );
 	}
 };
-
 
 // Add Unique Ids
 (function() {

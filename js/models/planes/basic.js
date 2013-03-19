@@ -100,8 +100,8 @@ BasicPlane.prototype = Object.deepExtend(
 		// On collision
 		onCollision : function( collidee ) {
 			
-			//if ( collidee instanceof PlayerBullet )
-			//	this.damage( collidee.getDamage() );
+			if ( collidee instanceof PlayerBullet )
+				this.damage( collidee.getDamage() );
 				
 			if ( collidee instanceof PlayerPlane )
 				this.damage( 100 );
