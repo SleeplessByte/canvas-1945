@@ -6,6 +6,9 @@ var GamePlayer = new function() {
 	var lives = 0;
 	var level = 0;
 	var loop = null;
+	var shotrate = 400;
+	
+	var bulletSource = null;
 	
 	// Gets the players plane
 	this.getPlane = function() {
@@ -32,11 +35,41 @@ var GamePlayer = new function() {
 		return name;
 	};
 	
+	// Gets the player health
+	this.getHealth = function() {
+		return this.getPlane().getHealth();
+	};
+	
+	this.getShotRate = function() {
+		return shotrate;
+	};
+	
+	this.tryToFire = ( function() {
+		var lastShot = 0;
+		return function( frame ) {
+			if ( frame.time - lastShot > this.getShotRate() ) {
+				lastShot = frame.time;
+				
+				// TODO different shot functions
+				var planepos = this.getPlane().getPosition();
+				var settings = { 
+					position : {  x : planepos.x, y: planepos.y }
+				};
+				settings.position.x += 32;
+				
+				var bullet = new PlayerBullet( bulletSource, 'ub', settings );
+				bullet.attach( Game.getLayer( 'level' ) );
+			};
+		};
+	})();
+	
 	// Spawns the player
 	this.spawn = function( newname, sourceImage ) {
 	
 		// Hello player
 		name = newname;
+		bulletSource = sourceImage;
+		
 		plane = new PlayerPlane( sourceImage );
 		plane.attach( Game.getLayer( 'level' ) );
 				
@@ -45,7 +78,9 @@ var GamePlayer = new function() {
 			Game.getCenterStage().x - plane.getWidth() / 2,
 			400
 		);
-				
+		
+		var game_player = this;
+	
 		// Player animation loop
 		plane.update = (function() {
 		
@@ -76,6 +111,8 @@ var GamePlayer = new function() {
 					plane.deltaPosition( -delta, 0 );
 				if ( Input.IsKeyDown( 39 ) ) // right
 					plane.deltaPosition( delta, 0 );
+				if ( Input.IsKeyDown( 32 ) ) // space
+					game_player.tryToFire( frame );
 					
 				// Clamp the position
 				var position = clampPosition( this.getWidth(), this.getHeight(), this.getPosition() );
