@@ -34,11 +34,13 @@
 		<script src="js/models/planes/basic.js"></script>
 		<script src="js/models/planes/turnable.js"></script>
 		<script src="js/models/planes/player.js"></script>
+		<script src="js/models/bullets/basic.js"></script>
+		<script src="js/models/bullets/player.js"></script>
 		<script src="js/models/hud/fps.js"></script>
 		<script>
-			Game.addLayer( 'background', new Kinetic.Layer() );
-			Game.addLayer( 'level', new Kinetic.Layer() );
-			Game.addLayer( 'hud', new Kinetic.Layer() );
+			Game.addLayer( 'background', new Kinetic.Layer( { listening : false } ) );
+			Game.addLayer( 'level', new Kinetic.Layer( { listening : false } ) );
+			Game.addLayer( 'hud', new Kinetic.Layer( { listening : false } ) );
 			
 			var sourceImage = new Image();
 			sourceImage.src = 'images/1945.png';
