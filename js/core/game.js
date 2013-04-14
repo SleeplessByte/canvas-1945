@@ -3,11 +3,16 @@ var Game = new function() {
 	var marked_for_removal = [];
 	var layers = {};
 	var speed = 80;
+	
+	this.width = 640;
+	this.height = 480;
+	
+	var game = this;
 
 	var stage = new Kinetic.Stage({
 		container: 'container',
-		width: 640,
-		height: 480
+		width: game.width,
+		height: game.height
 	});
 	
 	var loop = new Kinetic.Animation( function( frame ) { 
@@ -15,6 +20,7 @@ var Game = new function() {
 			if ( objects[ object ].update !== undefined )
 				objects[ object ].update( frame );
 		}
+		GameCollisions.step();
 	}, stage );
 	
 	// Adds an object
