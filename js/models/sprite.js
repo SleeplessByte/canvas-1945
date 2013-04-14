@@ -54,6 +54,12 @@ var Sprite = function( srcimg, type ) {
 		
 	this.getSprite().setAnimations( this.getFrames() );
 	
+	var collidable = new Collidable( this, this.getPosition, this.getFrameSize );
+	this.getCollidable = function() {
+		return collidable; 
+	};
+	
+	this.layer = null;
 }
 
 Sprite.prototype = {
@@ -113,7 +119,10 @@ Sprite.prototype = {
 		layer.add( sprite );
 		sprite.start();
 		
+		this.layer = layer;
+		
 		Game.add( this.id(), this );
+		GameCollisions.add( this.getCollidable() );
 		return this;
 	},
 	
@@ -156,9 +165,13 @@ Sprite.prototype = {
 	
 	// Destroys this sprite
 	destroy : function() {
-		this.getSprite().hide(); 
-		this.getSprite().destroy();
+		
+		console.log( 'destroying ' + this );
+		
+		this.getSprite().remove();
 		this.getSprite().stop(); 
+		this.getSprite().destroy();
+		this.getCollidable().stop();
 		
 		Game.remove( this.id() );
 	}
