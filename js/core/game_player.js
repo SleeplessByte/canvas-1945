@@ -55,7 +55,7 @@ var GamePlayer = new function() {
 				var settings = { 
 					position : {  x : planepos.x, y: planepos.y }
 				};
-				settings.position.x += 32;
+				settings.position.x += 17;
 				
 				var bullet = new PlayerBullet( bulletSource, 'ub', settings );
 				bullet.attach( Game.getLayer( 'level' ) );
